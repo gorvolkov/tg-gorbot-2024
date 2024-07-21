@@ -46,12 +46,11 @@ def format_movie_data(movie_data: dict) -> str:
     year = movie_data['docs'][0]['year']
 
     genre_list = []
-    genres = [{'name': 'фантастика'}, {'name': 'фэнтези'}, {'name': 'боевик'}, {'name': 'приключения'}]
+    genres = movie_data['docs'][0]['genres']
     for genre in genres:
         genre_list.append(genre['name'])
     genre_str = ', '.join(genre_list)
 
-    genres = movie_data['docs'][0]['genres']
     description = movie_data['docs'][0]['description']
     rating = movie_data['docs'][0]['description']
     age_rating = 'null'
