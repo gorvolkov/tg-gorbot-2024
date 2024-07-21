@@ -8,6 +8,7 @@ else:
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 API_KEY = os.getenv("API_KEY")
+API_BASE_URL = "https://api.kinopoisk.dev/"
 DEFAULT_COMMANDS = (
     ("start", "Запустить бота"),
     ("help", "Вывести справку"),
