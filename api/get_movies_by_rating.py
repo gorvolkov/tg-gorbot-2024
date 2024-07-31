@@ -18,7 +18,7 @@ def get_movies_by_rating(genre: str, count: int) -> str:
     }
 
     response = requests.get(
-        'https://api.kinopoisk.dev/v1.4/movie?rating.imdb=8-10',
+        'https://api.kinopoisk.dev/v1.4/movie',
         headers=headers,
         params=params
     )
@@ -30,18 +30,25 @@ def get_movies_by_rating(genre: str, count: int) -> str:
         movie_title = result[index]['name']
         movie_alt_title = result[index]['alternativeName']
         movie_rating_imdb = result[index]['rating']['imdb']
-        movie_data = f'{movie_number}. {movie_title} ({movie_alt_title}), {movie_rating_imdb}'
+        if movie_title is None:
+            movie_data = f'{movie_number}. {movie_alt_title} (не выходил на русском языке), {movie_rating_imdb}'
+        elif movie_alt_title is None:
+            movie_data = f'{movie_number}. {movie_title}, {movie_rating_imdb}'
+        else:
+            movie_data = f'{movie_number}. {movie_title} ({movie_alt_title}), {movie_rating_imdb}'
         res_list.append(movie_data)
 
     res_text = '\n'.join(res_list)
     return res_text
 
 
-
-
-def search_list():
+def test() -> None:
     """Тестировочная функция"""
+
     user_genre = input('Введите жанр: ')
     user_count = int(input('Количество фильмов в выборке: '))
-    text_to_user = sort_movie_by_rating(user_genre, user_count)
+    text_to_user = get_movies_by_rating(user_genre, user_count)
     print(text_to_user)
+
+
+test()
