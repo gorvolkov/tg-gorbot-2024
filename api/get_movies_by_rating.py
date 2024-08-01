@@ -38,13 +38,13 @@ def get_movies_by_rating(genre: str, count: int) -> str:
     return res_text
 
 
-def test() -> None:
-    """Тестировочная функция"""
-
-    user_genre = input('Введите жанр: ')
-    user_count = int(input('Количество фильмов в выборке: '))
-    text_to_user = get_movies_by_rating(user_genre, user_count)
-    print(text_to_user)
-
-
-test()
+# def test() -> None:
+#     """Тестировочная функция"""
+#
+#     user_genre = input('Введите жанр: ')
+#     user_count = int(input('Количество фильмов в выборке: '))
+#     text_to_user = get_movies_by_rating(user_genre, user_count)
+#     print(text_to_user)
+#
+#
+# test()

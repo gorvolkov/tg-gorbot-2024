@@ -1,6 +1,6 @@
 from keyboards.reply.contact import request_contact
 from loader import bot
-from states.movie_params import UserInfoState
+from states.movie_params import MovieInfoState
 from telebot.types import Message
 
 
