@@ -12,7 +12,6 @@ API_BASE_URL = "https://api.kinopoisk.dev/"
 ALL_COMMANDS = (
     ("start", "Запустить бота"),
     ("help", "Вывести справку"),
-    ("search", "Поиск фильмов"),
     ("movie_search", "поиск фильма/сериала по названию"),
     ("movie_by_rating", "поиск фильмов/сериалов по рейтингу"),
     ("low_budget_movie", "поиск фильмов/сериалов с низким бюджетом"),
