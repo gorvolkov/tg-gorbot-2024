@@ -1,6 +1,4 @@
 import requests
-import json
-from typing import List, Dict
 from config_data.config import API_KEY, API_BASE_URL
 
 headers = {"X-API-KEY": API_KEY}
@@ -10,7 +8,7 @@ def get_movie_by_title(title: str) -> dict:
     """Функция, выполняющая поиск сведений о фильме в каталоге Кинопоиска"""
 
     params = {
-        'query': title
+        'query': title,
     }
     response = requests.get(
         'https://api.kinopoisk.dev/v1.4/movie/search',

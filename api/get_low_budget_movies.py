@@ -1,7 +1,5 @@
 import requests
-import json
-from typing import List, Dict
-from config_data.config import API_KEY, API_BASE_URL
+from config_data.config import API_KEY
 
 headers = {"X-API-KEY": API_KEY}
 
@@ -10,9 +8,9 @@ def get_low_budget_movies(genre: str, count: int) -> str:
     """Функция поиска фильмов с высоким бюджетом в рамках заданного жанра"""
 
     params = {
+        'notNullFields': 'name',
         'genres.name': genre,
         'limit': count,
-        'budget.value': '0-10000',
         'sortField': 'budget.value',
         'sortType': '1'
     }
@@ -28,15 +26,7 @@ def get_low_budget_movies(genre: str, count: int) -> str:
     for index, movie in enumerate(result):
         movie_number = str(index + 1)
         movie_title = result[index]['name']
-        movie_alt_title = result[index]['alternativeName']
-        movie_budget = result['budget']
-        # movie_budget = '$$$'
-        if movie_title is None:
-            movie_data = f'{movie_number}. {movie_alt_title} (не выходил на русском языке), {movie_budget}'
-        elif movie_alt_title is None:
-            movie_data = f'{movie_number}. {movie_title}, {movie_budget}'
-        else:
-            movie_data = f'{movie_number}. {movie_title} ({movie_alt_title}), {movie_budget}'
+        movie_data = f'{movie_number}. {movie_title}'
         res_list.append(movie_data)
 
     res_text = '\n'.join(res_list)

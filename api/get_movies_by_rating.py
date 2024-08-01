@@ -1,6 +1,4 @@
 import requests
-import json
-from typing import List, Dict
 from config_data.config import API_KEY, API_BASE_URL
 
 headers = {"X-API-KEY": API_KEY}
@@ -10,6 +8,10 @@ def get_movies_by_rating(genre: str, count: int) -> str:
     """Функция поиска фильмов по рейтингу в рамках заданного жанра"""
 
     params = {
+        'notNullFields': 'name',
+        # добавлено, чтобы отфильтровать фильмы, которые не выходили на русском языке
+        # и выборка была более релевантной выборке приложения Кинопоиска
+
         'genres.name': genre,
         'limit': count,
         'rating.kp': '5-10',
@@ -28,14 +30,8 @@ def get_movies_by_rating(genre: str, count: int) -> str:
     for index, movie in enumerate(result):
         movie_number = str(index + 1)
         movie_title = result[index]['name']
-        movie_alt_title = result[index]['alternativeName']
-        movie_rating_imdb = result[index]['rating']['imdb']
-        if movie_title is None:
-            movie_data = f'{movie_number}. {movie_alt_title} (не выходил на русском языке), {movie_rating_imdb}'
-        elif movie_alt_title is None:
-            movie_data = f'{movie_number}. {movie_title}, {movie_rating_imdb}'
-        else:
-            movie_data = f'{movie_number}. {movie_title} ({movie_alt_title}), {movie_rating_imdb}'
+        movie_rating_kp = result[index]['rating']['kp']
+        movie_data = f'{movie_number}. {movie_title}, {movie_rating_kp}'
         res_list.append(movie_data)
 
     res_text = '\n'.join(res_list)
