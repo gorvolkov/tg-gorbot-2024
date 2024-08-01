@@ -4,7 +4,7 @@ from config_data.config import API_KEY, API_BASE_URL
 headers = {"X-API-KEY": API_KEY}
 
 
-def get_movie_by_title(title: str) -> dict:
+def get_movie_by_title(title: str) -> str:
     """Функция, выполняющая поиск сведений о фильме в каталоге Кинопоиска"""
 
     params = {
@@ -15,11 +15,8 @@ def get_movie_by_title(title: str) -> dict:
         headers=headers,
         params=params
     )
-    return response.json()
 
-
-def format_movie_data(movie_data: dict) -> str:
-    """Функция, форматирующая вывод данных по одному фильму"""
+    movie_data = response.json()
 
     title = movie_data['docs'][0]['name']
     title_orig = movie_data['docs'][0]['alternativeName']
@@ -48,15 +45,13 @@ def format_movie_data(movie_data: dict) -> str:
     return text
 
 
+
 def test_movie_search():
     """Тестировочная функция"""
 
     user_movie_title = input("Введите название фильма: ")
     user_movie_data = get_movie_by_title(user_movie_title)
-    text_to_user = format_movie_data(user_movie_data)
     print(user_movie_data)
-    print(text_to_user)
-
 
 
 test_movie_search()
