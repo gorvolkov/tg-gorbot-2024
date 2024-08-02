@@ -4,7 +4,7 @@ from telebot.handler_backends import State, StatesGroup
 class MovieSearchState(StatesGroup):
     start_state = State()
     mid_state = State()
-    end_state = State()
+    # end_state = State()
 
     title = State()
 
