@@ -1,18 +1,19 @@
 from loader import bot
-from states.states import MovieSearchState
+from states.states import SearchState
 from telebot.types import Message
 
 from api import get_movies_by_rating
 from config_data.config import GENRES_SET
 
 
-@bot.message_handler(commands=['movie_by_rating'])
-def ask_genre(message: Message) -> None:
-    bot.send_message(message.from_user.id, "Введите жанр:")
-    bot.set_state(message.from_user.id, MovieSearchState.rating_genre, message.chat.id)
+@bot.callback_query_handler(func=lambda callback_query: (callback_query.data == "movies_by_rating"))
+def movie_by_title_answer(callback_query):
+    bot.edit_message_reply_markup(callback_query.from_user.id, callback_query.message.message_id)
+    bot.send_message(callback_query.from_user.id, 'Введите жанр: ')
+    bot.set_state(callback_query.from_user.id, SearchState.r_genre)
 
 
-@bot.message_handler(state=MovieSearchState.rating_genre)
+@bot.message_handler(state=SearchState.r_genre)
 def ask_count(message: Message) -> None:
     if message.text.lower() not in GENRES_SET:
         bot.send_message(message.from_user.id, "Такого жанра нет в моём каталоге. Пожалуйста, подумайте ещё")
@@ -20,10 +21,10 @@ def ask_count(message: Message) -> None:
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
             data['genre'] = message.text
         bot.send_message(message.from_user.id, 'Введите количество фильмов в выборке:')
-        bot.set_state(message.from_user.id, MovieSearchState.rating_count, message.chat.id)
+        bot.set_state(message.from_user.id, SearchState.r_count, message.chat.id)
 
 
-@bot.message_handler(state=MovieSearchState.rating_count)
+@bot.message_handler(state=SearchState.r_count)
 def give_result(message: Message) -> None:
     if not message.text.isdigit():
         bot.send_message(message.from_user.id, 'Здесь может быть только число')
@@ -33,10 +34,7 @@ def give_result(message: Message) -> None:
             result = get_movies_by_rating.get_movies_by_rating(genre=data['genre'], count=data['count'])
             bot.send_message(message.from_user.id, f'Вот что нашлось по вашему запросу\n\n {result}')
 
-            bot.set_state(message.from_user.id, MovieSearchState.rating_genre, message.chat.id)
-            # bot.set_state(message.from_user.id, MovieSearchState.mid_menu, message.chat.id)
-#           пока нет промежуточного меню, возвращаю первое состояние текущего сценария
-
+            bot.set_state(message.from_user.id, SearchState.awaiting, message.chat.id)
 
 
 
