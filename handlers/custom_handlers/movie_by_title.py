@@ -24,5 +24,12 @@ def movie_search_response(message: Message) -> None:
     bot.send_message(message.from_user.id, 'Выберите дальнейшую опцию', reply_markup=gen_mid_menu())
 
 
+@bot.callback_query_handler(state=SearchState.title, func=lambda callback_query: (callback_query.data == "continue"))
+def continue_current_mode(callback_query):
+    bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
+    bot.send_message(callback_query.from_user.id, 'Введите название фильма или сериала')
+    bot.set_state(callback_query.from_user.id, SearchState.title)
+
+
 
 
