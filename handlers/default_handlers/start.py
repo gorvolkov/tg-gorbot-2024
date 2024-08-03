@@ -1,5 +1,6 @@
 from telebot.types import Message
 from config_data.config import ALL_COMMANDS
+
 from loader import bot
 from keyboards.inline.main_menu import gen_main_menu
 
@@ -22,9 +23,5 @@ def greeting(message: Message):
                           f"/history — просмотр истории ваших запросов и поиска фильма/сериала\n\n"
                                            f"Выберите направление поиска", reply_markup=gen_main_menu())
 
-
-# @bot.message_handler(state=UserState.start_state)
-# def main_menu(message: Message):
-#     bot.send_message(message.from_user.id, )
 
 
