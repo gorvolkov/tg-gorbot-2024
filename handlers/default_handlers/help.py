@@ -7,3 +7,4 @@ from loader import bot
 def bot_help(message: Message):
     text = [f"/{command} - {desk}" for command, desk in ALL_COMMANDS]
     bot.reply_to(message, "\n".join(text))
+#     заменить эту байду на описание функционала кнопок на инлайн-клавиатуре

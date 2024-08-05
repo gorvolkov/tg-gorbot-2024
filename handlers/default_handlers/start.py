@@ -1,27 +1,36 @@
 from telebot.types import Message
-from config_data.config import ALL_COMMANDS
+from sqlite3 import IntegrityError
+
 
 from loader import bot
 from keyboards.inline.main_menu import gen_main_menu
+from database.models import User
 
 
 @bot.message_handler(commands=["start"])
 def greeting(message: Message):
-    # Приветствие пользователя, обзор функций бота, отправляем пользователю клавиатуру для выбора направления поиска
+    user_id = message.from_user.id
+    username = message.from_user.username
+    first_name = message.from_user.first_name
+    last_name = message.from_user.last_name
 
-    # commands = [f"/{command} - {desk}" for command, desk in DEFAULT_COMMANDS]
-    # commands = [f"/{command} - {desk}" for command, desk in DEFAULT_COMMANDS]
-    # bot.reply_to(message, "\n".join(commands))
-
-    bot.send_message(message.from_user.id, f"Здравствуйте, {message.from_user.full_name}! "
-                          f"Это бот Кинопоиска, который поможет вам сориентироваться в мире кинематографа.\n"
-                          f"Я выполняю следующие команды:\n\n"
-                          f"/movie_search — поиск фильма/сериала по названию\n"
-                          f"/movie_by_rating — поиск фильмов/сериалов по рейтингу\n"
-                          f"/low_budget_movie — поиск фильмов/сериалов с низким бюджетом\n"
-                          f"/high_budget_movie — поиск фильмов/сериалов с высоким бюджетом\n"
-                          f"/history — просмотр истории ваших запросов и поиска фильма/сериала\n\n"
-                                           f"Выберите направление поиска", reply_markup=gen_main_menu())
+    try:
+        existing_user = User.get(User.user_id == user_id)
+        bot.reply_to(message, f"Рад вас снова видеть, {first_name}!\n"
+                              f"Выберите направление поиска", reply_markup=gen_main_menu())
+    except User.DoesNotExist:
+        try:
+            User.create(
+                user_id=user_id,
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+            )
+            bot.reply_to(message, f"Здравствуйте, {first_name}!\n"
+                              f"Я бот Кинопоиска, который поможет вам сориентироваться в мире кинематографа.\n"
+                              f"Для продолжения выберите направление поиска", reply_markup=gen_main_menu())
+        except IntegrityError:
+            bot.reply_to(message, f"Ошибка при создании пользователя.")
 
 
 

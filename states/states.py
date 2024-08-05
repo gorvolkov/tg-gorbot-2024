@@ -9,5 +9,5 @@ class SearchState(StatesGroup):
     lb_count = State()
     r_genre = State()
     r_count = State()
-    history = ()
+    h_date = State()
     awaiting = State()
