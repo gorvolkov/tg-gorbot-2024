@@ -57,5 +57,33 @@ class Movie(BaseModel):
                                                     poster=self.poster)
 
 
+class History(BaseModel):
+    num_in_history = AutoField()
+    title = CharField()
+    title_orig = CharField()
+    description = CharField()
+    rating = CharField()
+    year = CharField()
+    genres = CharField()
+    age_rating = CharField()
+    poster = CharField()
+
+    def __str__(self):
+        return ("Название: {title} ({title_orig})\n"
+                "Описание: {description}\n"
+                "Рейтинг Кинопоиска: {rating}\n"
+                "Год производства: {year}\n"
+                "Жанр: {genres}\n"
+                "Возрастной рейтинг: {age_rating}\n"
+                "Постер к фильму: {poster}").format(title=self.title,
+                                                    title_orig=self.title_orig,
+                                                    description=self.description,
+                                                    rating=self.rating,
+                                                    year=self.year,
+                                                    genres=self.genres,
+                                                    age_rating=self.age_rating,
+                                                    poster=self.poster)
+
+
 def create_models():
     db.create_tables(BaseModel.__subclasses__())

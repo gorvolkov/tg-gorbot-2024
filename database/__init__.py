@@ -1,1 +1,1 @@
-from . models import User, Movie
+from . models import User, Movie, History

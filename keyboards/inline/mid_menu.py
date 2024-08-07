@@ -1,7 +1,7 @@
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
-def gen_mid_menu():
+def gen_mid_menu() -> InlineKeyboardMarkup:
     button_1 = InlineKeyboardButton(text="Продолжить", callback_data="continue")
     button_2 = InlineKeyboardButton(text="Завершить", callback_data="quit")
     button_3 = InlineKeyboardButton(text="В главное меню", callback_data="to_main")

@@ -1,7 +1,7 @@
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
-def gen_main_menu():
+def gen_main_menu() -> InlineKeyboardMarkup:
     button_1 = InlineKeyboardButton(text="Поиск по названию", callback_data="movie_by_title")
     button_2 = InlineKeyboardButton(text="Поиск по рейтингу", callback_data="movies_by_rating")
     button_3 = InlineKeyboardButton(text="Выс. бюджет", callback_data="high_budget_movies")
