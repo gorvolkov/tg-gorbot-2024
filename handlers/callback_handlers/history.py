@@ -3,7 +3,7 @@ from typing import List
 
 from telebot.types import Message
 
-from database import User, Movie
+from database.models import User, Movie
 from keyboards.inline.mid_menu import gen_mid_menu
 from loader import bot
 from states.states import SearchState
@@ -31,15 +31,31 @@ def give_history(message: Message):
         bot.send_message(message.from_user.id, "Введите дату поиска в правильном формате (ДД.ММ.ГГГГ):")
         return
 
-    result = []
-    movies: List[Movie] = user.movies.filter(due_date=user_date).order_by(-Movie.movie_id)
-    result.extend(map(str, reversed(movies)))
+    # можно дописать проверку, чтобы при вводе еще не наступившей даты бот отвечал, что этот день еще не наступил и т.п.
 
-    if not result:
-        bot.send_message(message.from_user.id, "В вашей истории поиска ещё ничего нет")
+    history = user.movies.filter(due_date=user_date).order_by(-Movie.movie_id)
+    # result.extend(map(str, reversed(movies)))
+
+    if not history:
+        bot.send_message(message.from_user.id, "На эту дату ничего не нашлось", reply_markup=gen_mid_menu())
         return
+    else:
+        # вот это уже огород. когда будет пагинация, это все не нужно будет
+        if len(history) > 1:
+            for movie in history[::-2]:
+                bot.send_message(message.from_user.id, f"{str(movie)}")
+            bot.send_message(message.from_user.id, str(history[-1]), reply_markup=gen_mid_menu())
+        else:
+            bot.send_message(message.from_user.id, str(history[0]), reply_markup=gen_mid_menu())
+        bot.set_state(message.from_user.id, SearchState.awaiting)
 
-    bot.send_message(message.from_user.id, "\n\n".join(result), reply_markup=gen_mid_menu())
-    bot.set_state(message.from_user.id, SearchState.awaiting)
 
 
+
+# @bot.callback_query_handler(state=SearchState.r_count, func=lambda callback_query: (callback_query.data == "continue"))
+# def continue_current_mode(callback_query):
+#     """Хэндлер для повторного запуска сценария поиска по истории"""
+#
+#     bot.edit_message_reply_markup(callback_query.from_user.id, callback_query.message.message_id)
+#     bot.send_message(callback_query.from_user.id, 'Введите жанр: ')
+#     bot.set_state(callback_query.from_user.id, SearchState.r_genre)

@@ -2,39 +2,25 @@ from loader import bot
 from states.states import SearchState
 from telebot.types import Message
 
-from api import get_high_budget, get_low_budget
+from api import get_low_budget
 from config_data.config import GENRES_SET
 from database.write_movie_to_db import write_to_db
 from keyboards.inline.mid_menu import gen_mid_menu
 
 
-@bot.callback_query_handler(func=lambda callback_query: (callback_query.data == "high_budget_movies"))
-def movie_by_title_answer(callback_query):
-    """Хэндлер сценария поиска фильмов с высоким бюджетом (первый шаг сценария).
-    Запрашивает жанр"""
-
-    bot.edit_message_reply_markup(callback_query.from_user.id, callback_query.message.message_id)
-    # with bot.retrieve_data(callback_query.from_user.id, callback_query.chat.id) as data:
-    #     data['mode'] = callback_query.data
-    bot.send_message(callback_query.from_user.id, 'Введите жанр: ')
-    bot.set_state(callback_query.from_user.id, SearchState.hb_genre)
-
-
 @bot.callback_query_handler(func=lambda callback_query: (callback_query.data == "low_budget_movies"))
-def movie_by_title_answer(callback_query):
+def ask_genre(callback_query):
     """Хэндлер сценария поиска фильмов с низким бюджетом (первый шаг сценария).
     Запрашивает жанр"""
 
     bot.edit_message_reply_markup(callback_query.from_user.id, callback_query.message.message_id)
-    with bot.retrieve_data(callback_query.from_user.id, callback_query.chat.id) as data:
-        data['mode'] = callback_query.data
     bot.send_message(callback_query.from_user.id, 'Введите жанр: ')
-    bot.set_state(callback_query.from_user.id, SearchState.hb_genre)
+    bot.set_state(callback_query.from_user.id, SearchState.lb_genre)
 
 
-@bot.message_handler(state=SearchState.hb_genre)
+@bot.message_handler(state=SearchState.lb_genre)
 def ask_count(message: Message) -> None:
-    """Хэндлер сценария поиска фильмов с высоким бюджетом (второй шаг сценария).
+    """Хэндлер сценария поиска фильмов с низким бюджетом (второй шаг сценария).
         Выполняется проверка корректности введённого жанра,
         в случае успеха запрашивается кол-во фильмов в выборке"""
 
@@ -43,14 +29,13 @@ def ask_count(message: Message) -> None:
     else:
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
             data['genre'] = message.text
-
         bot.send_message(message.from_user.id, 'Введите количество фильмов в выборке:')
-        bot.set_state(message.from_user.id, SearchState.hb_count, message.chat.id)
+        bot.set_state(message.from_user.id, SearchState.lb_count, message.chat.id)
 
 
-@bot.message_handler(state=SearchState.hb_count)
+@bot.message_handler(state=SearchState.lb_count)
 def give_result(message: Message) -> None:
-    """Хэндлер сценария поиска фильмов с высоким бюджетом (заключительный шаг сценария).
+    """Хэндлер сценария поиска фильмов с низким бюджетом (заключительный шаг сценария).
         Выполняется проверка корректности введённого значения кол-ва фильмов в выборке.
         В случае успеха отдается результат"""
 
@@ -59,10 +44,7 @@ def give_result(message: Message) -> None:
     else:
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
             data['count'] = message.text
-            if data['mode'] == 'high_budget_movies':
-                result = get_high_budget(genre=data['genre'], count=data['count'])
-            elif data['mode'] == 'low_budget_movies':
-                result = get_low_budget(genre=data['genre'], count=data['count'])
+            result = get_low_budget(genre=data['genre'], count=data['count'])
             bot.send_message(message.from_user.id, f'Вот что нашлось по вашему запросу:\n\n')
             for movie in result:
                 write_to_db(movie=movie, user_id=message.from_user.id)
@@ -70,11 +52,11 @@ def give_result(message: Message) -> None:
         bot.send_message(message.from_user.id, 'Выберите дальнейшую опцию', reply_markup=gen_mid_menu())
 
 
-@bot.callback_query_handler(state=SearchState.hb_count,
+@bot.callback_query_handler(state=SearchState.lb_count,
                             func=lambda callback_query: (callback_query.data == "continue"))
 def continue_current_mode(callback_query) -> None:
-    """Хэндлер для повторного запуска сценария поиска фильмов с высоким бюджетом"""
+    """Хэндлер для повторного запуска сценария поиска фильмов с низким бюджетом"""
 
     bot.edit_message_reply_markup(callback_query.from_user.id, callback_query.message.message_id)
     bot.send_message(callback_query.from_user.id, 'Введите жанр: ')
-    bot.set_state(callback_query.from_user.id, SearchState.hb_genre)
+    bot.set_state(callback_query.from_user.id, SearchState.lb_genre)
