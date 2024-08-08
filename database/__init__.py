@@ -1,1 +1,2 @@
-from . models import User, Movie, History
+from . import models
+from . import write_movie_to_db

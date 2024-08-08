@@ -1,3 +1,4 @@
+import peewee
 from peewee import (
     AutoField,
     BooleanField,
@@ -10,8 +11,7 @@ from peewee import (
 )
 
 from config_data.config import DB_PATH
-
-db = SqliteDatabase(DB_PATH)
+db = peewee.SqliteDatabase(DB_PATH)
 
 
 class BaseModel(Model):
@@ -41,40 +41,12 @@ class Movie(BaseModel):
     poster = CharField()
 
     def __str__(self):
-        return ("Название: {title} ({title_orig})\n"
-                "Описание: {description}\n"
-                "Рейтинг Кинопоиска: {rating}\n"
-                "Год производства: {year}\n"
-                "Жанр: {genres}\n"
-                "Возрастной рейтинг: {age_rating}\n"
-                "Постер к фильму: {poster}").format(title=self.title,
-                                                    title_orig=self.title_orig,
-                                                    description=self.description,
-                                                    rating=self.rating,
-                                                    year=self.year,
-                                                    genres=self.genres,
-                                                    age_rating=self.age_rating,
-                                                    poster=self.poster)
-
-
-class History(BaseModel):
-    num_in_history = AutoField()
-    title = CharField()
-    title_orig = CharField()
-    description = CharField()
-    rating = CharField()
-    year = CharField()
-    genres = CharField()
-    age_rating = CharField()
-    poster = CharField()
-
-    def __str__(self):
-        return ("Название: {title} ({title_orig})\n"
-                "Описание: {description}\n"
-                "Рейтинг Кинопоиска: {rating}\n"
-                "Год производства: {year}\n"
-                "Жанр: {genres}\n"
-                "Возрастной рейтинг: {age_rating}\n"
+        return ("Название: {title} {title_orig}\n\n"
+                "Описание: {description}\n\n"
+                "Рейтинг Кинопоиска: {rating}\n\n"
+                "Год производства: {year}\n\n"
+                "Жанр: {genres}\n\n"
+                "Возрастной рейтинг: {age_rating}\n\n"
                 "Постер к фильму: {poster}").format(title=self.title,
                                                     title_orig=self.title_orig,
                                                     description=self.description,
@@ -87,3 +59,5 @@ class History(BaseModel):
 
 def create_models():
     db.create_tables(BaseModel.__subclasses__())
+
+
