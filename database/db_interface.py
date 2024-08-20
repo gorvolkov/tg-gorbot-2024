@@ -42,7 +42,10 @@ def write_selection_to_temp(movie_list: list, user_id: int) -> None:
 
 
 def merge_temp_to_movies() -> None:
-    # после завершения работы с конкретной выборкой должна вливать temp в movie, а temp полностью очищать
+    """
+    Функция завершения работы с выборкой.
+    Добавляет таблицу Temp к таблице Movie и очищает Temp.
+    """
 
     # получаем все записи из Temp
     temp_records = Temp.select()

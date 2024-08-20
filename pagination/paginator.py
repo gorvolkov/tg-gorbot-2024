@@ -1,5 +1,6 @@
 from telebot.types import InlineKeyboardMarkup
 
+from database.db_interface import merge_temp_to_movies
 from database.models import Movie, Temp, User
 from keyboards.inline.pagination_kbd import gen_pagination_kbd
 from keyboards.inline.mid_menu import gen_mid_menu
@@ -27,6 +28,7 @@ def process_pagination(callback_query) -> None:
 
     if req[1] == 'quit':
         bot.send_message(callback_query.from_user.id, 'Выберите дальнейшую опцию', reply_markup=gen_mid_menu())
+        merge_temp_to_movies()
         return
 
     mode, page, count = req[1], int(req[2]), int(req[3])
