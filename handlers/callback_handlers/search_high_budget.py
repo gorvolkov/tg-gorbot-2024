@@ -4,7 +4,7 @@ from telebot.types import Message
 
 from api import get_high_budget
 from config_data.config import GENRES_SET
-from database.write_movie_to_db import write_to_db
+from database.db_interface import write_to_db
 from keyboards.inline.mid_menu import gen_mid_menu
 
 

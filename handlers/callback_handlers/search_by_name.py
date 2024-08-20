@@ -6,7 +6,7 @@ from telebot.types import Message
 
 from api import get_by_name
 
-from database.write_movie_to_db import write_to_db
+from database.db_interface import write_to_db, write_selection_to_temp
 from loader import bot
 from keyboards.inline.mid_menu import gen_mid_menu
 from pagination import init_pagination
@@ -41,10 +41,10 @@ def give_result(message: Message) -> None:
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
             data['count'] = message.text
             result = get_by_name(name=data['name'], count=data['count'])
-            for movie in result:
-                write_to_db(movie=movie, user_id=message.from_user.id)
+            # for movie in result:
+            #     write_to_db(movie=movie, user_id=message.from_user.id)
             #     записали все в базу данных. это можно включить в функцию получения результата
-
+            write_selection_to_temp(movie_list=result, user_id=message.from_user.id)
             first_result = str(result[0])
             kbd = init_pagination(count=len(result), user_id=message.from_user.id)
             bot.send_message(message.from_user.id, f'Вот что нашлось по вашему запросу:\n {first_result}', reply_markup=kbd)

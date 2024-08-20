@@ -57,6 +57,36 @@ class Movie(BaseModel):
                                                     poster=self.poster)
 
 
+class Temp(BaseModel):
+    movie_id = AutoField()
+    user = ForeignKeyField(User, backref="movies")
+    due_date = DateField()
+    title = CharField()
+    title_orig = CharField()
+    description = CharField()
+    rating = CharField()
+    year = CharField()
+    genres = CharField()
+    age_rating = CharField()
+    poster = CharField()
+
+    def __str__(self):
+        return ("Название: {title} {title_orig}\n\n"
+                "Описание: {description}\n\n"
+                "Рейтинг Кинопоиска: {rating}\n\n"
+                "Год производства: {year}\n\n"
+                "Жанр: {genres}\n\n"
+                "Возрастной рейтинг: {age_rating}\n\n"
+                "Постер к фильму: {poster}").format(title=self.title,
+                                                    title_orig=self.title_orig,
+                                                    description=self.description,
+                                                    rating=self.rating,
+                                                    year=self.year,
+                                                    genres=self.genres,
+                                                    age_rating=self.age_rating,
+                                                    poster=self.poster)
+
+
 def create_models():
     db.create_tables(BaseModel.__subclasses__())
 

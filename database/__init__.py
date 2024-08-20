@@ -1,2 +1,2 @@
 from . import models
-from . import write_movie_to_db
+from . import db_interface
