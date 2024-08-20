@@ -2,6 +2,7 @@ from loader import bot
 from states.states import SearchState
 from telebot.types import Message
 
+
 from api import get_by_rating
 from config_data.config import GENRES_SET
 from database.write_movie_to_db import write_to_db
