@@ -1,24 +1,25 @@
 from datetime import datetime
 
+from config_data.config import no_result_answer
 from states.states import SearchState
 from telebot.types import Message
 
 
 from api import get_by_name
 
-from database.db_interface import write_to_db, write_selection_to_temp
+from database.db_interface import write_selection_to_temp, merge_temp_to_movies
 from loader import bot
-from keyboards.inline.mid_menu import gen_mid_menu
+from keyboards.inline import main_menu_kbd, pagination_kbd
 from pagination import init_pagination
 
 
-@bot.callback_query_handler(func=lambda callback_query: (callback_query.data == "movie_by_title"))
-def ask_title(callback_query) -> None:
+@bot.callback_query_handler(func=lambda call: (call.data == "movie_by_title"))
+def ask_title(call) -> None:
     """Хэндлер для старта поиска по названию. Спрашиваем название фильма"""
 
-    bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
-    bot.send_message(callback_query.from_user.id, 'Введите название фильма или сериала: ')
-    bot.set_state(callback_query.from_user.id, SearchState.n_name)
+    bot.delete_message(call.from_user.id, call.message.message_id)
+    bot.send_message(call.from_user.id, 'Введите название фильма или сериала: ')
+    bot.set_state(call.from_user.id, SearchState.n_name)
 
 
 @bot.message_handler(state=SearchState.n_name)
@@ -41,25 +42,27 @@ def give_result(message: Message) -> None:
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
             data['count'] = message.text
             result = get_by_name(name=data['name'], count=data['count'])
-            # for movie in result:
-            #     write_to_db(movie=movie, user_id=message.from_user.id)
-            #     записали все в базу данных. это можно включить в функцию получения результата
-            write_selection_to_temp(movie_list=result, user_id=message.from_user.id)
-            first_result = str(result[0])
-            kbd = init_pagination(count=len(result), user_id=message.from_user.id)
-            bot.send_message(message.from_user.id, f'Вот что нашлось по вашему запросу:\n {first_result}', reply_markup=kbd)
 
-                # bot.send_message(message.from_user.id, f'{str(movie)}')
-        # bot.send_message(message.from_user.id, 'Выберите дальнейшую опцию', reply_markup=gen_mid_menu())
+            # перед сдачей везде заменить на try / except
+            if result:
+                write_selection_to_temp(movie_list=result, user_id=message.from_user.id)
+                first_result = str(result[0])
+                kbd = init_pagination(count=len(result), user_id=message.from_user.id)
+                bot.send_message(message.from_user.id, f'Вот что нашлось по вашему запросу:\n {first_result}', reply_markup=kbd)
+            else:
+                bot.send_message(message.from_user.id, no_result_answer, reply_markup=main_menu_kbd())
 
 
-@bot.callback_query_handler(state=SearchState.n_count, func=lambda callback_query: (callback_query.data == "continue"))
-def continue_current_mode(callback_query) -> None:
+@bot.callback_query_handler(state=SearchState.n_count, func=lambda call: (call.data == "continue"))
+def continue_current_mode(call) -> None:
     """Хэндлер для повторного запуска поиска фильмов по названию"""
 
-    bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
-    bot.send_message(callback_query.from_user.id, 'Введите название фильма или сериала')
-    bot.set_state(callback_query.from_user.id, SearchState.n_name)
+    # сливаем Temp в Movies
+    merge_temp_to_movies()
+
+    bot.delete_message(call.from_user.id, call.message.message_id)
+    bot.send_message(call.from_user.id, 'Введите название фильма или сериала')
+    bot.set_state(call.from_user.id, SearchState.n_name)
 
 
 

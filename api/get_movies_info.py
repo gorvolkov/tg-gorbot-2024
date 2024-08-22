@@ -76,7 +76,7 @@ def _get_selection(resp_data) -> list:
     return movie_list
 
 
-def get_by_name(name: str, count: int) -> list:
+def get_by_name(name: str, count: str) -> list:
     """Функция, реализующая поиск фильмов по названию.
     Принимает название и заданное число фильмов в выборке,
     отдаёт список с текстами по фильмам"""
@@ -126,15 +126,19 @@ def get_by_rating(genre: str, count: str, rating: str) -> list:
     return result
 
 
-def get_low_budget(genre: str, count: str) -> list:
-    """Функция поиска фильмов с высоким бюджетом в рамках заданного жанра"""
+def get_by_budget(genre: str, count: str, low=None) -> list:
+    """Функция поиска фильмов с высоким или низким бюджетом в рамках заданного жанра"""
+
+    sort_type = '-1'
+    if low:
+        sort_type = '1'
 
     params = {
         'notNullFields': 'name',
         'genres.name': genre,
         'limit': count,
         'sortField': 'budget.value',
-        'sortType': '1'
+        'sortType': sort_type
     }
 
     response = requests.get(
@@ -147,22 +151,22 @@ def get_low_budget(genre: str, count: str) -> list:
     return result
 
 
-def get_high_budget(genre: str, count: str) -> list:
-    """Функция поиска фильмов с высоким бюджетом в рамках заданного жанра"""
-
-    params = {
-        'notNullFields': 'name',
-        'genres.name': genre,
-        'limit': count,
-        'sortField': 'budget.value',
-        'sortType': '-1'
-    }
-
-    response = requests.get(
-        f'{API_BASE_URL}',
-        headers=headers,
-        params=params
-    )
-
-    result = _get_selection(resp_data=response)
-    return result
+# def get_high_budget(genre: str, count: str) -> list:
+#     """Функция поиска фильмов с высоким бюджетом в рамках заданного жанра"""
+#
+#     params = {
+#         'notNullFields': 'name',
+#         'genres.name': genre,
+#         'limit': count,
+#         'sortField': 'budget.value',
+#         'sortType': '-1'
+#     }
+#
+#     response = requests.get(
+#         f'{API_BASE_URL}',
+#         headers=headers,
+#         params=params
+#     )
+#
+#     result = _get_selection(resp_data=response)
+#     return result

@@ -2,22 +2,6 @@ from datetime import datetime
 from database.models import Movie, Temp, User, db
 
 
-def write_to_db(movie: Movie, user_id) -> None:
-    """Функция, которая записывает новый фильм в базу данных"""
-
-    Movie.create(
-        user_id=user_id,
-        due_date=datetime.now(),
-        title=movie.title,
-        title_orig=movie.title_orig,
-        description=movie.description,
-        rating=movie.rating,
-        year=movie.year,
-        genres=movie.genres,
-        age_rating=movie.age_rating,
-        poster=movie.poster)
-
-
 def write_movie_to_temp(movie: Movie, user_id: int) -> None:
     """Функция, которая записывает новый фильм в базу данных"""
 
@@ -70,8 +54,14 @@ def merge_temp_to_movies() -> None:
     Temp.delete().execute()
 
 
-# def get_history(user: User) -> list:
-#
-#     history = user.movies.filter(due_date=user_date).order_by(-Movie.movie_id)
-#     return history
+def get_history(user_id: int, date: datetime) -> list:
+    """
+    Производит выборку из общей истории поиска по пользователю и дате.
+    Записывает результат во временную таблицу Temp
+    """
+    user = User.get(User.user_id == user_id)
+    result = user.movies.filter(due_date=date).order_by(-Movie.movie_id)
+    # result.extend(map(str, reversed(movies)))
+    return result
+
 

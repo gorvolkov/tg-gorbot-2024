@@ -1,10 +1,8 @@
 from telebot.types import Message
-from config_data.config import ALL_COMMANDS
 from loader import bot
 
 
 @bot.message_handler(commands=["help"])
 def bot_help(message: Message):
-    text = [f"/{command} - {desk}" for command, desk in ALL_COMMANDS]
-    bot.reply_to(message, "\n".join(text))
-#     заменить эту байду на описание функционала кнопок на инлайн-клавиатуре
+    """Обработчик команды /help"""
+    bot.send_message(message.from_user.id, "Я не уверен, нужна ли тут эта команда")
