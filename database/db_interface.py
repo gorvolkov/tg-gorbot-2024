@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from database.models import Movie, Temp, User, db
 
 
@@ -7,7 +7,7 @@ def write_movie_to_temp(movie: Movie, user_id: int) -> None:
 
     Temp.create(
         user_id=user_id,
-        due_date=datetime.now(),
+        due_date=datetime.today(),
         title=movie.title,
         title_orig=movie.title_orig,
         description=movie.description,
@@ -15,7 +15,8 @@ def write_movie_to_temp(movie: Movie, user_id: int) -> None:
         year=movie.year,
         genres=movie.genres,
         age_rating=movie.age_rating,
-        poster=movie.poster)
+        poster=movie.poster,
+    )
 
 
 def write_selection_to_temp(movie_list: list, user_id: int) -> None:
@@ -31,12 +32,12 @@ def merge_temp_to_movies() -> None:
     Добавляет таблицу Temp к таблице Movie и очищает Temp.
     """
 
-    # получаем все записи из Temp
-    temp_records = Temp.select()
+    # получаем все записи из temp
+    temp_all = Temp.select()
 
-    # Добавление записей из таблицы Temp к таблице Movie
+    # Добавляем все записи из таблицы temp в таблицу movie
     with db.atomic():
-        for temp_record in temp_records:
+        for temp_record in temp_all:
             Movie.create(
                 user=temp_record.user,
                 due_date=temp_record.due_date,
@@ -47,21 +48,18 @@ def merge_temp_to_movies() -> None:
                 year=temp_record.year,
                 genres=temp_record.genres,
                 age_rating=temp_record.age_rating,
-                poster=temp_record.poster
+                poster=temp_record.poster,
             )
 
     # очищаем временную таблицу
     Temp.delete().execute()
 
 
-def get_history(user_id: int, date: datetime) -> list:
+def get_history(user_id: int, query_date: date) -> list:
     """
     Производит выборку из общей истории поиска по пользователю и дате.
     Записывает результат во временную таблицу Temp
     """
-    user = User.get(User.user_id == user_id)
-    result = user.movies.filter(due_date=date).order_by(-Movie.movie_id)
-    # result.extend(map(str, reversed(movies)))
+    user = User.get_or_none(User.user_id == user_id)
+    result = list(user.movies.filter(due_date=query_date).order_by(-Movie.movie_id))
     return result
-
-

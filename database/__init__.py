@@ -1,2 +1,1 @@
-from . import models
-from . import db_interface
+from . import models, db_interface

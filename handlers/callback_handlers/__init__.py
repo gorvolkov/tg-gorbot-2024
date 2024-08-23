@@ -5,4 +5,3 @@ from . import search_by_rating
 from . import search_by_name
 from . import navigation_handlers
 
-

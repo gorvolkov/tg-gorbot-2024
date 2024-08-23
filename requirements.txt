@@ -1,5 +1,5 @@
 pyTelegramBotAPI==4.9.0
 python-dotenv==0.21.1
-
 requests~=2.32.3
 peewee~=3.17.6
+python-telegram-bot-calendar~=1.0.5
