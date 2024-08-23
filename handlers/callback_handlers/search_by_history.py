@@ -2,7 +2,7 @@ from telegram_bot_calendar import DetailedTelegramCalendar
 
 from config_data.config import no_result_answer
 from database.db_interface import (
-    merge_temp_to_movies,
+    drop_temp,
     get_history,
     write_selection_to_temp,
 )
@@ -45,40 +45,32 @@ def calendar_handler(call):
         )
     elif query_date:
         result = get_history(user_id=call.from_user.id, query_date=query_date)
-        # здесь вылетает ошибка
 
-        write_selection_to_temp(movie_list=result, user_id=call.from_user.id)
-        first_result = str(result[0])
-        kbd = init_pagination(count=len(result))
-        bot.send_message(
-            call.from_user.id,
-            f"Вот что нашлось по вашему запросу:\n {first_result}",
-            reply_markup=kbd,
-        )
-
-        # Дальнейшее пока закомментировано, чтобы видеть, что за ошибка вылетает
-        # if result:
-        #     write_selection_to_temp(movie_list=result, user_id=call.from_user.id)
-        #     first_result = str(result[0])
-        #     kbd = init_pagination(count=len(result))
-        #     bot.send_message(
-        #         call.from_user.id,
-        #         f"Вот что нашлось по вашему запросу:\n {first_result}",
-        #         reply_markup=kbd,
-        #     )
-        # else:
-        #     bot.send_message(
-        #         call.from_user.id, no_result_answer, reply_markup=main_menu_kbd()
-        #     )
+        if result:
+            write_selection_to_temp(movie_list=result, user_id=call.from_user.id)
+            first_result = str(result[0])
+            kbd = init_pagination(count=len(result))
+            bot.send_message(
+                call.from_user.id,
+                f"Вот что нашлось по вашему запросу:\n {first_result}",
+                parse_mode="html",
+                reply_markup=kbd,
+            )
+            bot.set_state(call.from_user.id, SearchState.from_history)
+        else:
+            bot.send_message(
+                call.from_user.id, no_result_answer, reply_markup=main_menu_kbd()
+            )
 
 
 @bot.callback_query_handler(
-    state=SearchState.h_date, func=lambda call: (call.data == "continue")
+    state=SearchState.from_history, func=lambda call: (call.data == "continue")
 )
 def continue_current_mode(call) -> None:
     """Хэндлер для повторного поиска по истории"""
 
-    merge_temp_to_movies()
+    drop_temp()
+    # в случае выхода из текущего сценария поиска по истории просто очищаем temp
 
     bot.delete_message(call.from_user.id, call.message.message_id)
     bot.set_state(call.from_user.id, SearchState.h_date)

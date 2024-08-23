@@ -16,5 +16,6 @@ class SearchState(StatesGroup):
     lb_count = State()
 
     h_date = State()
+    from_history = State()
 
     awaiting = State()

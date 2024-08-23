@@ -45,7 +45,8 @@ def give_result(message: Message) -> None:
                 kbd = init_pagination(count=len(result))
                 bot.send_message(
                     message.from_user.id,
-                    f"Вот что нашлось по вашему запросу:\n {first_result}",
+                    f"Вот что нашлось по вашему запросу:\n\n{first_result}",
+                    parse_mode="html",
                     reply_markup=kbd,
                 )
             else:

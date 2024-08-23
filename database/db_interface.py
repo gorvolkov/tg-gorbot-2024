@@ -60,6 +60,16 @@ def get_history(user_id: int, query_date: date) -> list:
     Производит выборку из общей истории поиска по пользователю и дате.
     Записывает результат во временную таблицу Temp
     """
-    user = User.get_or_none(User.user_id == user_id)
-    result = list(user.movies.filter(due_date=query_date).order_by(-Movie.movie_id))
+
+    result = Movie.filter(user_id=user_id, due_date=query_date).order_by(
+        -Movie.movie_id
+    )
+
     return result
+
+
+def drop_temp() -> None:
+    """
+    Добавлено для того, чтобы очищать temp при выходе из работы с выборкой истории
+    """
+    Temp.delete().execute()

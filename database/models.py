@@ -28,7 +28,7 @@ class User(BaseModel):
 
 class Movie(BaseModel):
     movie_id = AutoField()
-    user = ForeignKeyField(User, backref="movies")
+    user = ForeignKeyField(User)
     due_date = DateField()
     title = CharField()
     title_orig = CharField()
@@ -41,28 +41,19 @@ class Movie(BaseModel):
 
     def __str__(self):
         return (
-            "Название: {title} {title_orig}\n\n"
-            "Описание: {description}\n\n"
-            "Рейтинг Кинопоиска: {rating}\n\n"
-            "Год производства: {year}\n\n"
-            "Жанр: {genres}\n\n"
-            "Возрастной рейтинг: {age_rating}\n\n"
-            "Постер к фильму: {poster}"
-        ).format(
-            title=self.title,
-            title_orig=self.title_orig,
-            description=self.description,
-            rating=self.rating,
-            year=self.year,
-            genres=self.genres,
-            age_rating=self.age_rating,
-            poster=self.poster,
+            f"<b>Название:</b> {self.title} {self.title_orig}\n\n"
+            f"<b>Описание:</b> {self.description}\n\n"
+            f"<b>Рейтинг Кинопоиска:</b> {self.rating}\n\n"
+            f"<b>Год производства:</b> {self.year}\n\n"
+            f"<b>Жанр:</b> {self.genres}\n\n"
+            f"<b>Возрастной рейтинг:</b> {self.age_rating}\n\n"
+            f"<b>Постер к фильму:</b> {self.poster}"
         )
 
 
 class Temp(BaseModel):
     movie_id = AutoField()
-    user = ForeignKeyField(User, backref="movies")
+    user = ForeignKeyField(User)
     due_date = DateField()
     title = CharField()
     title_orig = CharField()
@@ -75,22 +66,13 @@ class Temp(BaseModel):
 
     def __str__(self):
         return (
-            "Название: {title} {title_orig}\n\n"
-            "Описание: {description}\n\n"
-            "Рейтинг Кинопоиска: {rating}\n\n"
-            "Год производства: {year}\n\n"
-            "Жанр: {genres}\n\n"
-            "Возрастной рейтинг: {age_rating}\n\n"
-            "Постер к фильму: {poster}"
-        ).format(
-            title=self.title,
-            title_orig=self.title_orig,
-            description=self.description,
-            rating=self.rating,
-            year=self.year,
-            genres=self.genres,
-            age_rating=self.age_rating,
-            poster=self.poster,
+            f"<b>Название:</b> {self.title} {self.title_orig}\n\n"
+            f"<b>Описание:</b> {self.description}\n\n"
+            f"<b>Рейтинг Кинопоиска:</b> {self.rating}\n\n"
+            f"<b>Год производства:</b> {self.year}\n\n"
+            f"<b>Жанр:</b> {self.genres}\n\n"
+            f"<b>Возрастной рейтинг:</b> {self.age_rating}\n\n"
+            f"<b>Постер к фильму:</b> {self.poster}"
         )
 
 
