@@ -16,14 +16,14 @@
 - название фильма или сериала
 - количество результатов в выборке (реализовано, т.к. с одним и тем же названием может быть несколько фильмов)
 
-[](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/2%20search_by_name.jpg)
+![](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/2%20search_by_name.jpg)
 
 Далее пользователь получает выборку страниц, на которых отображены название фильма, оригинальное название (при наличии), описание, рейтинг фильма в базе Кинопоиска, возрастные ограничения и постер (в виде URL).
 В случае отсутствия какого-то из параметров он отмечается как не указанный или отсутствующий.
 Пользователь может осуществлять навигацию по выборке при помощи пагинации. 
 Под кнопками перемещения по выборке находятся кнопки, позволяющие вернуться продолжить поиск по прежнему сценарию (например, запустить новый поиск по названию), завершить работу с ботом или вернуться в главное меню.
 
-[](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/3%20search_by_name_result.jpg)
+![](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/3%20search_by_name_result.jpg)
 
 **2. Поиск по рейтингу**
 При запуске поиска по рейтингу бот запрашивает у пользователя:
@@ -31,7 +31,7 @@
 - рейтинг (число от 1 до 10)
 - количество результатов в выборке
 
-[](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/4%20search_by_rating_start.jpg)
+![](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/4%20search_by_rating_start.jpg)
 
 Вывод аналогичен выводу, реализованному в сценарии поиска по названию.
 
@@ -40,7 +40,7 @@
 - жанр
 - кол-во результатов в выборке
 
-https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/5%20search_by_budget_start.jpg
+![](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/5%20search_by_budget_start.jpg)
 
 **5. Поиск по истории**
 Бот позволяет вывести историю поиска за конкретную дату. 
