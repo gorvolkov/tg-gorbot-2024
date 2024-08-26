@@ -50,6 +50,7 @@ def calendar_handler(call):
             write_selection_to_temp(movie_list=result, user_id=call.from_user.id)
             first_result = str(result[0])
             kbd = init_pagination(count=len(result))
+            bot.delete_message(call.message.chat.id, call.message.message_id)
             bot.send_message(
                 call.from_user.id,
                 f"Вот что нашлось по вашему запросу:\n {first_result}",
