@@ -69,7 +69,6 @@ def get_history(user_id: int, query_date: date) -> list:
 
 
 def drop_temp() -> None:
-    """
-    Добавлено для того, чтобы очищать temp при выходе из работы с выборкой истории
-    """
+    """Функция, очищающая временную таблицу temp при выходе из работы с выборкой истории"""
+
     Temp.delete().execute()

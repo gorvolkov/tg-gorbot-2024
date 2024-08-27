@@ -12,7 +12,6 @@ def to_main_from_history(call) -> None:
     """Хэндлер, обрабатывающий команду возврата в главное меню из сценария поиска по истории"""
 
     drop_temp()
-
     bot.delete_message(call.from_user.id, call.message.message_id)
     bot.send_message(
         call.from_user.id, "Выберите направление поиска", reply_markup=main_menu_kbd()
@@ -20,8 +19,9 @@ def to_main_from_history(call) -> None:
 
 
 @bot.callback_query_handler(func=lambda call: (call.data == "to_main"))
-def return_to_main_menu(call):
+def return_to_main_menu(call) -> None:
     """Хэндлер, обрабатывающий команду возврата в главное меню"""
+
     merge_temp_to_movies()
     bot.delete_message(call.from_user.id, call.message.message_id)
     bot.send_message(
@@ -36,7 +36,6 @@ def quit_from_history(call) -> None:
     """Хэндлер, обрабатывающий завершение работы с ботом из сценария поиска по истории"""
 
     drop_temp()
-
     bot.edit_message_reply_markup(call.from_user.id, call.message.message_id)
     bot.send_message(
         call.from_user.id,
@@ -48,11 +47,10 @@ def quit_from_history(call) -> None:
 
 
 @bot.callback_query_handler(func=lambda call: (call.data == "quit"))
-def quit_bot(call):
+def quit_bot(call) -> None:
     """Обработчик завершения работы с ботом"""
 
     merge_temp_to_movies()
-
     bot.edit_message_reply_markup(call.from_user.id, call.message.message_id)
     bot.send_message(
         call.from_user.id,
@@ -77,7 +75,6 @@ def process_pagination(call) -> None:
 
     curr_result = str(Temp.get(Temp.movie_id == page))
     new_kbd = pagination_kbd(page=page, count=count)
-
     bot.delete_message(call.from_user.id, call.message.message_id)
     bot.send_message(
         call.from_user.id, curr_result, parse_mode="html", reply_markup=new_kbd

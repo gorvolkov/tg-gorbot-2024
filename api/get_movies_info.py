@@ -1,6 +1,6 @@
 import requests
+from requests import Response
 from config_data.config import API_KEY, API_BASE_URL
-
 from database.models import Movie
 
 headers = {"X-API-KEY": API_KEY}
@@ -15,9 +15,6 @@ def _format_movie_data(movie_data: dict) -> Movie:
 
     title_orig = ""
     try:
-        # блоки с if добавлены в обертку try / except,
-        # потому что в некоторых случаях API возвращает None, а в других случаях возникает KeyError (например, при отсутствии постера).
-        # Конструкции получились несколько громоздкие, но зато получилось предусмотреть больше случаев неполных ответов
         if movie_data["alternativeName"]:
             title_orig = f"({movie_data["alternativeName"]})"
     except Exception:
@@ -85,7 +82,7 @@ def _format_movie_data(movie_data: dict) -> Movie:
     return new_movie
 
 
-def _get_selection(resp_data) -> list:
+def _get_selection(resp_data: Response) -> list:
     """Функция, принимающая данные в виде json-объекта, полученные по запросу к API Кинопоиска.
     Возвращает список данных по найденным фильмам"""
 
@@ -107,23 +104,18 @@ def get_by_name(name: str, count: str) -> list:
 
     params = {"notNullFields": "name", "query": name, "limit": count}
     response = requests.get(f"{API_BASE_URL}/search", headers=headers, params=params)
-
     result = _get_selection(resp_data=response)
+
     return result
 
 
 def get_by_rating(genre: str, count: str, rating: str) -> list:
     """Функция поиска фильмов по рейтингу в рамках заданного жанра"""
 
-    if rating == "10":
-        rating_query = "10-10"
-    else:
-        rating_query = f"{rating}-{rating}.9"
+    rating_query = rating
 
     params = {
         "notNullFields": "name",
-        # добавлено, чтобы убрать из выборки фильмы, которые не выходили на русском языке
-        # и результат был сопоставим с выборкой, которую дает приложение Кинопоиска
         "genres.name": genre,
         "limit": count,
         "rating.kp": rating_query,
@@ -132,8 +124,8 @@ def get_by_rating(genre: str, count: str, rating: str) -> list:
     }
 
     response = requests.get(f"{API_BASE_URL}", headers=headers, params=params)
-
     result = _get_selection(resp_data=response)
+
     return result
 
 
@@ -153,6 +145,6 @@ def get_by_budget(genre: str, count: str, low=None) -> list:
     }
 
     response = requests.get(f"{API_BASE_URL}", headers=headers, params=params)
-
     result = _get_selection(resp_data=response)
+
     return result

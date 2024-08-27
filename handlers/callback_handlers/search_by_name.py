@@ -11,7 +11,7 @@ from states.states import SearchState
 
 @bot.callback_query_handler(func=lambda call: (call.data == "movie_by_title"))
 def ask_title(call) -> None:
-    """Хэндлер для старта поиска по названию. Спрашиваем название фильма"""
+    """Хэндлер для старта поиска по названию (1 шаг сценария). Запрашивается название фильма"""
 
     bot.delete_message(call.from_user.id, call.message.message_id)
     bot.send_message(call.from_user.id, "Введите название фильма или сериала: ")
@@ -20,20 +20,24 @@ def ask_title(call) -> None:
 
 @bot.message_handler(state=SearchState.n_name)
 def ask_count(message: Message) -> None:
-    """Хэндлер для продолжения поиска по названию. Спрашиваем кол-во фильмов в выборке"""
+    """Хэндлер для продолжения поиска по названию (2 шаг сценария). Запрашивается кол-во фильмов в выборке"""
 
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["name"] = message.text
     bot.set_state(message.from_user.id, SearchState.n_count)
-    bot.send_message(message.from_user.id, "Введите кол-во фильмов в выборке: ")
+    bot.send_message(message.from_user.id, "Введите кол-во фильмов в выборке:")
 
 
 @bot.message_handler(state=SearchState.n_count)
 def give_result(message: Message) -> None:
-    """Хэндлер завершения поиска по названию. Выдаем пользователю результат"""
+    """Хэндлер завершения поиска по названию"""
 
     if not message.text.isdigit():
-        bot.send_message(message.from_user.id, "Здесь может быть только число")
+        bot.send_message(
+            message.from_user.id,
+            "Здесь может быть только число. "
+            "Пожалуйста, введите корректное значение:",
+        )
     else:
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
             data["count"] = message.text
@@ -61,9 +65,7 @@ def give_result(message: Message) -> None:
 def continue_current_mode(call) -> None:
     """Хэндлер для повторного запуска поиска фильмов по названию"""
 
-    # сливаем Temp в Movies
     merge_temp_to_movies()
-
-    bot.delete_message(call.from_user.id, call.message.message_id)
-    bot.send_message(call.from_user.id, "Введите название фильма или сериала")
+    bot.edit_message_reply_markup(call.from_user.id, call.message.message_id)
+    bot.send_message(call.from_user.id, "Введите название фильма или сериала:")
     bot.set_state(call.from_user.id, SearchState.n_name)
