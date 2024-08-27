@@ -51,18 +51,17 @@
 - жанр (выбор с помощью клавиатуры)
 - количество результатов в выборке
 
-![](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/5%20search_by_budget_start.jpg)
 
 ## **5. Поиск по истории**
 
 Бот позволяет вывести историю поиска за конкретную дату. 
 Для выбора даты используется интерактивное меню выбора даты:
 
-![](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/6%20history_year.jpg)
+![](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/06%20history_year.jpg)
 
-![](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/7%20history_month.jpg)
+![](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/07%20history_month.jpg)
 
-![](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/8%20history_day.jpg)
+![](https://github.com/gorvolkov/tg-gorbot-2024/blob/main/screenshots/08%20history_day.jpg)
 
 Выборка истории поиска даётся в обратном порядке (т.е. первым отображается фильм, который был найден последним).
 
