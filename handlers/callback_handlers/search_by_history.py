@@ -40,7 +40,7 @@ def calendar_handler(call: CallbackQuery) -> None:
     if not query_date and key:
         bot.edit_message_text(
             f"Выберите {cal_steps[step]}",
-            call.message.chat.id,
+            call.from_user.id,
             call.message.message_id,
             reply_markup=key,
         )
@@ -51,7 +51,7 @@ def calendar_handler(call: CallbackQuery) -> None:
             write_selection_to_temp(movie_list=result, user_id=call.from_user.id)
             first_result = str(result[0])
             kbd = init_pagination(count=len(result))
-            bot.delete_message(call.message.chat.id, call.message.message_id)
+            bot.delete_message(call.from_user.id, call.message.message_id)
             bot.send_message(
                 call.from_user.id,
                 f"Вот что нашлось по вашему запросу:\n\n{first_result}",
@@ -60,7 +60,7 @@ def calendar_handler(call: CallbackQuery) -> None:
             )
             bot.set_state(call.from_user.id, SearchState.from_history)
         else:
-            bot.delete_message(call.message.chat.id, call.message.message_id)
+            bot.delete_message(call.from_user.id, call.message.message_id)
             bot.send_message(
                 call.from_user.id, no_result_answer, reply_markup=main_menu_kbd()
             )

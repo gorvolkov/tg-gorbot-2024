@@ -22,7 +22,7 @@ def ask_title(call) -> None:
 def ask_count(message: Message) -> None:
     """Хэндлер для продолжения поиска по названию (2 шаг сценария). Запрашивается кол-во фильмов в выборке"""
 
-    with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
+    with bot.retrieve_data(message.from_user.id) as data:
         data["name"] = message.text
     bot.set_state(message.from_user.id, SearchState.n_count)
     bot.send_message(message.from_user.id, "Введите кол-во фильмов в выборке:")
@@ -39,7 +39,7 @@ def give_result(message: Message) -> None:
             "Пожалуйста, введите корректное значение:",
         )
     else:
-        with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
+        with bot.retrieve_data(message.from_user.id) as data:
             data["count"] = message.text
             result = get_by_name(name=data["name"], count=data["count"])
 

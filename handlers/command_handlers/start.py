@@ -8,7 +8,7 @@ from database.models import User
 
 
 @bot.message_handler(commands=["start"])
-def greeting(message: Message):
+def greeting(message: Message) -> None:
     """Обработчик команды /start"""
 
     user_id = message.from_user.id
@@ -22,8 +22,11 @@ def greeting(message: Message):
 
     try:
         existing_user = User.get(User.user_id == user_id)
-        bot.reply_to(message, f"Рад вас снова видеть, {first_name}!\n"
-                              f"Выберите направление поиска", reply_markup=main_menu_kbd())
+        bot.reply_to(
+            message,
+            f"Рад вас снова видеть, {first_name}!\n" f"Выберите направление поиска",
+            reply_markup=main_menu_kbd(),
+        )
     except User.DoesNotExist:
         try:
             User.create(
@@ -32,11 +35,12 @@ def greeting(message: Message):
                 first_name=first_name,
                 last_name=last_name,
             )
-            bot.reply_to(message, f"Здравствуйте, {first_name}!\n"
-                              f"Я бот Кинопоиска, который поможет вам сориентироваться в мире кинематографа.\n"
-                              f"Для продолжения выберите направление поиска", reply_markup=main_menu_kbd())
+            bot.reply_to(
+                message,
+                f"Здравствуйте, {first_name}!\n"
+                f"Я бот Кинопоиска, который поможет вам сориентироваться в мире кинематографа.\n"
+                f"Для продолжения выберите направление поиска",
+                reply_markup=main_menu_kbd(),
+            )
         except IntegrityError:
             bot.reply_to(message, f"Ошибка при создании пользователя.")
-
-
-

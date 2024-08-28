@@ -1,5 +1,6 @@
 import requests
 from requests import Response
+
 from config_data.config import API_KEY, API_BASE_URL
 from database.models import Movie
 
@@ -112,7 +113,15 @@ def get_by_name(name: str, count: str) -> list:
 def get_by_rating(genre: str, count: str, rating: str) -> list:
     """Функция поиска фильмов по рейтингу в рамках заданного жанра"""
 
-    rating_query = rating
+    if rating.isdigit():
+        rating_query = "10" if rating == "10" else f"{rating}-{rating}.999"
+    # если значение рейтинга введено как целое число, то ищем в диапазоне значений (а для максимального значения 10
+    # оставляем 10)
+
+    else:
+        rating_query = rating
+    # если значение рейтинга указано как число с плавающей точкой, то ищем фильмы более точно именно с таким
+    # значением рейтинга
 
     params = {
         "notNullFields": "name",

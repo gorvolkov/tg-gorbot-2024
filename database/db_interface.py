@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from database.models import Movie, Temp, User, db
+from database.models import Movie, Temp, db
 
 
 def write_movie_to_temp(movie: Movie, user_id: int) -> None:

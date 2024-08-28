@@ -7,8 +7,8 @@ else:
     load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-DB_PATH = "database\\database.db"
 API_KEY = os.getenv("API_KEY")
+DB_PATH = "database\\database.db"
 API_BASE_URL = "https://api.kinopoisk.dev/v1.4/movie"
 ALL_COMMANDS = (("start", "Запустить бота"),)
 
@@ -57,5 +57,5 @@ GENRES_LIST = [
     "криминал",
 ]
 
-# Лексикон бота
+# Лексикон
 no_result_answer = "К сожалению, я не смог обработать ваш запрос. Вы можете повторить попытку позже или начать новый поиск."

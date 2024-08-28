@@ -48,7 +48,7 @@ def give_result(message: Message) -> None:
     if not message.text.isdigit():
         bot.send_message(message.from_user.id, "Здесь может быть только число")
     else:
-        with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
+        with bot.retrieve_data(message.from_user.id) as data:
             data["count"] = message.text
 
         result = get_by_budget(genre=data["genre"], count=data["count"])
